@@ -16,10 +16,26 @@ module GitHubAPI
     end
   end
 
+  class APILimitError < StandardError
+    def self.api_limit?(response)
+      response == self.api_limit_reached_response
+    end
+
+    def self.api_limit_reached_response
+      {
+        "message" => "API rate limit exceeded for 149.241.143.56.",
+        "documentation_url"=>"http://developer.github.com/v3/#rate-limiting"
+      }
+    end
+  end
+
   def self.get_user_repos(username)
       uri = URI("https://api.github.com/users/#{username}/repos")
       response = JSON.parse(Net::HTTP.get(uri))
+      
       raise UserNotFoundError if UserNotFoundError.not_found?(response)
+      raise APILimitError if APILimitError.api_limit?(response)
+
       response
     end
 end
