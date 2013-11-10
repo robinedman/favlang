@@ -5,7 +5,7 @@ require_relative 'favourite_language_guesser'
 language_guesser = FavouriteLanguageGuesser.new
 
 get '/' do
-  send_file('./views/index.html')
+  send_file('./public/index.html')
 end
 
 # User's favourite programming language
