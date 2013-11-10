@@ -18,12 +18,14 @@ module GitHubAPI
 
   class APILimitError < StandardError
     def self.api_limit?(response)
-      response == self.api_limit_reached_response
+      if response.is_a?(Hash)
+        response['documentation_url'] == self.api_limit_reached_response['documentation_url']
+      end
     end
 
     def self.api_limit_reached_response
       {
-        "message" => "API rate limit exceeded for 149.241.143.56.",
+        "message" => "API rate limit exceeded for...",
         "documentation_url"=>"http://developer.github.com/v3/#rate-limiting"
       }
     end
