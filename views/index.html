@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">        
+  <title>Favourite Language Guesser</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+  <header>        
+    <h1>Favourite Language Guesser</h1>
+  </header>
+    <main>
+      <form id="guessing-form">
+        <label for="username">GitHub username</label>
+        <input id="username" type="text">
+        <input type="submit" value="Find favourite language">
+      </form>
+      <span id="answer"></span>
+    </main>                
+  <footer>
+    <small>Copyright &copy; Robin Edman <time datetime="2013">2013</time></small>
+  </footer>
+
+  <script>
+    $(document).ready(function() {
+      $("#guessing-form").submit(function(e) {
+        e.preventDefault();
+        var username = $("#username").val();
+        $.get(username + "/favourite")
+          .done(function(answer) {
+            $("#answer").text(answer.username + "'s favourite language seems to be: " + answer.favourite);
+        });
+      }); 
+    });
+  </script> 
+</body>
+</html>
