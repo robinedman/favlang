@@ -1,8 +1,7 @@
-require 'minitest'
 require "minitest/autorun"
 require_relative '../favourite_language_guesser'
 
-class FavouriteLanguageGuesserTest < Minitest::Test
+class FavouriteLanguageGuesserTest < MiniTest::Unit::TestCase
   def setup
     @lg = FavouriteLanguageGuesser.new
   end
