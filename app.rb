@@ -10,10 +10,16 @@ end
 
 # User's favourite programming language
 get '/:username/favourite' do |username|
-  content_type :json
-
-  {
-    favourite: language_guesser.favourite_language(username),
-    username: username
-  }.to_json
+  begin
+    favourite_language = language_guesser.favourite_language(username)
+  rescue GitHubAPI::GitHubAPIError => e
+    status 404
+    e.message
+  else
+    content_type :json    
+    {
+      favourite: favourite_language,
+      username: username
+    }.to_json
+  end
 end
