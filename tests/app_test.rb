@@ -1,27 +1,40 @@
 ENV['RACK_ENV'] = 'test'
 
-require 'capybara'
-require 'capybara/dsl'
 require "minitest/autorun"
+require 'rack/test'
+require 'json'
 require_relative '../app'
 
 class AppTest < MiniTest::Unit::TestCase
-  include Capybara::DSL
-  # Capybara.default_driver = :selenium # <-- use Selenium driver
+  include Rack::Test::Methods
 
-  def setup
-    Capybara.app = Sinatra::Application.new
-    visit('/')
+  def app
+    Sinatra::Application
   end
 
-  # def test_it_works
-  #   assert(page.has_content?('Favourite Language Guesser'))
-  # end
+  def get_user_favourite(username)
+    get "/#{username}/favourite"
+  end
 
-  # def test_get_favourite_language
-  #   username = 'rubinius'
-  #   fill_in('GitHub username', :with => username)
-  #   click_button('Find favourite language')
-  #   assert(page.has_content?('favourite language seems to be'))
-  # end
+
+  def test_default_route_serves_page
+    get '/'
+
+    assert(last_response.ok?)
+    assert(last_response.body.include?('Favourite Language Guesser'))
+  end
+
+  def test_get_favourite_language
+    get_user_favourite 'rubinius'
+    answer = JSON.parse(last_response.body)
+
+    assert_equal('Ruby', answer['favourite'])
+  end
+
+  def test_nonexistent_username_returns_error_code
+    get_user_favourite 'auserthatdoesnotexist'
+
+    refute_equal(200, last_response.status)
+  end
+
 end
