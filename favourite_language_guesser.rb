@@ -5,8 +5,17 @@ class FavouriteLanguageGuesser
   class NoUpdatedRepositoriesWithinTimeframeError < StandardError
   end
 
-  def favourite_language(username, since_months_ago = nil)
-    used_languages(username, since_months_ago).max_by { |language, times_used | times_used }.first
+  # Determines username's favourite language by counting their GitHub
+  # repositories within since_months_ago. If no code has been pushed the last 6
+  # months we try again without the time limit. 
+  def favourite_language(username, since_months_ago = 6)
+    begin
+      languages = used_languages(username, since_months_ago)
+    rescue NoUpdatedRepositoriesWithinTimeframeError
+      languages = used_languages(username)
+    end
+   
+   languages.max_by { |language, times_used | times_used }.first
   end
 
   # username: GitHub username
@@ -20,7 +29,7 @@ class FavouriteLanguageGuesser
 
   private
 
-  def repos_since(repos, since_months_ago)
+  def repos_since(repos, since_months_ago = nil)
     return repos unless since_months_ago
 
     filtered_repos = repos.reject { |repo| !repo.has_key?('pushed_at') }
