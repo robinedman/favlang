@@ -1,5 +1,5 @@
 require "minitest/autorun"
-require_relative '../favourite_language_guesser'
+require_relative '../lib/favourite_language_guesser'
 
 class FavouriteLanguageGuesserTest < MiniTest::Unit::TestCase
   def setup

@@ -1,6 +1,6 @@
 require 'sinatra'
 require 'json'
-require_relative 'favourite_language_guesser'
+require_relative 'lib/favourite_language_guesser'
 
 language_guesser = FavouriteLanguageGuesser.new
 
